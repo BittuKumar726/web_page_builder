@@ -1,6 +1,7 @@
 import React, { CSSProperties, useEffect, useState } from "react";
 import { DragSourceMonitor, useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
+import { getDraggingStyles } from "../utils";
 
 interface TextBoxProps {
   id: string;
@@ -8,35 +9,23 @@ interface TextBoxProps {
   type: string;
   left: number;
   top: number;
+  isPreview: boolean;
 }
 
-function getStyles(
-  left: number,
-  top: number,
-  isDragging: boolean
-): CSSProperties {
-  const transform = `translate3d(${left}px, ${top}px, 0)`;
-  console.log({ left, top }, "jbsdjbcjbdsj");
-  return {
-    position: "absolute",
-    transform,
-    WebkitTransform: transform,
-    left: left,
-    top: top,
-    opacity: isDragging ? 0 : 1,
-    height: isDragging ? 0 : "",
-    backgroundColor: "red",
-  };
-}
-
-const TextBox: React.FC<TextBoxProps> = ({ id, key, type, left, top }) => {
-  const [text, setText] = useState("Edit me");
+const TextBox: React.FC<TextBoxProps> = ({
+  id,
+  type,
+  left,
+  top,
+  isPreview,
+}) => {
+  const [text, setText] = useState("Enter the content input");
   const [editing, setEditing] = useState(false);
 
   const handleDoubleClick = () => setEditing(true);
 
   const handleBlur = () => setEditing(false);
-  const [{ isDragging }, drag, preview] = useDrag(
+  const [{ isDragging }, drag] = useDrag(
     () => ({
       type: type,
       item: { id, left, top, type: type },
@@ -47,24 +36,21 @@ const TextBox: React.FC<TextBoxProps> = ({ id, key, type, left, top }) => {
     [id, left, top, type]
   );
 
-  useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true });
-  }, []);
-
   return (
     <div
       onDoubleClick={handleDoubleClick}
-      className="p-2 bg-white border border-gray-400"
-      style={{ position: "absolute", left, top }}
-      ref={drag}
+      className="w-[20%]"
+      style={getDraggingStyles(left, top, isDragging, true, isPreview)}
     >
       <input
-        type="text"
+        placeholder="placeholder"
         value={text}
         onChange={(e) => setText(e.target.value)}
         onBlur={handleBlur}
         autoFocus
-        className="w-full p-1 border border-gray-400"
+        className="w-full p-1 border-2 border-gray-500"
+        style={{ cursor: !isPreview ? "move" : "" }}
+        ref={!isPreview ? drag : null}
       />
     </div>
   );

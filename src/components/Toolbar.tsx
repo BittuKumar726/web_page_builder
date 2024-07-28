@@ -18,7 +18,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ type, children }) => {
   return (
     <div
       ref={drag}
-      className={`p-2 m-2 border border-gray-400 cursor-pointer ${
+      className={`p-2 m-2 border rounded border-gray-400 cursor-pointer ${
         isDragging ? "opacity-50" : "opacity-100"
       }`}
     >

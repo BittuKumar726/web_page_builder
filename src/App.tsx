@@ -2,15 +2,7 @@ import React, { useState } from "react";
 import Toolbar from "./components/Toolbar";
 import Canvas from "./components/Canvas";
 
-interface ComponentProps {
-  type: string;
-  left: number;
-  top: number;
-  id: number;
-}
-
 const App: React.FC = () => {
-  const [components, setComponents] = useState<ComponentProps[]>([]);
   const [isPreview, setIsPreview] = useState(false);
 
   return (
@@ -18,11 +10,13 @@ const App: React.FC = () => {
       <Toolbar />
       <button
         onClick={() => setIsPreview(!isPreview)}
-        className="p-2 m-2 bg-green-500 text-white rounded"
+        className="p-2 mt-2 ml-3 mr-3 bg-green-500 text-white rounded"
       >
-        {isPreview ? "Edit Mode" : "Preview Mode"}
+        Change {isPreview ? "Edit Mode" : "Preview Mode"}
       </button>
-      <Canvas components={components} setComponents={setComponents} />
+      <div className="pl-3 pr-3 pb-3 pt-2 w-full h-[700px]">
+        <Canvas isPreview={isPreview} />
+      </div>
     </div>
   );
 };
