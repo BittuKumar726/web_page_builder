@@ -1,5 +1,5 @@
 import React from "react";
-import { DragSourceMonitor, useDrag } from "react-dnd";
+import { useDrag } from "react-dnd";
 import { ItemTypes, getDraggingStyles } from "../utils";
 
 interface ImageBoxProps {
@@ -11,15 +11,16 @@ interface ImageBoxProps {
 }
 
 const ImageBox: React.FC<ImageBoxProps> = ({ id, left, top, isPreview }) => {
+  // Set up drag functionality using react-dnd
   const [{ isDragging }, drag] = useDrag(
     () => ({
-      type: ItemTypes.BUTTON,
-      item: { id, type: ItemTypes.BUTTON, left, top },
+      type: ItemTypes.BUTTON, // Type of draggable item
+      item: { id, type: ItemTypes.BUTTON, left, top }, // Data about the draggable item
       collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
+        isDragging: monitor.isDragging(), // Track dragging state
       }),
     }),
-    [id, left, top]
+    [id, left, top] // Dependencies for the drag hook
   );
 
   return (

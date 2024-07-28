@@ -7,19 +7,20 @@ interface DraggableItemProps {
 }
 
 const DraggableItem: React.FC<DraggableItemProps> = ({ type, children }) => {
+  // Set up drag functionality using react-dnd
   const [{ isDragging }, drag] = useDrag(() => ({
-    type,
-    item: { type, left: 10, top: 10 },
+    type, // Type of draggable item
+    item: { type, left: 10, top: 10 }, // Data about the draggable item
     collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+      isDragging: monitor.isDragging(), // Track dragging state
     }),
   }));
 
   return (
     <div
-      ref={drag}
+      ref={drag} // Attach drag ref to the div
       className={`p-2 m-2 border rounded border-gray-400 cursor-pointer ${
-        isDragging ? "opacity-50" : "opacity-100"
+        isDragging ? "opacity-50" : "opacity-100" // Adjust opacity based on dragging state
       }`}
     >
       {children}

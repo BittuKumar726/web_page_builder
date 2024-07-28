@@ -19,21 +19,24 @@ interface CanvasProps {
 }
 
 const Canvas: React.FC<CanvasProps> = ({ isPreview }) => {
-  const canvasRef = React.useRef<HTMLDivElement>(null);
-  const [components, setComponents] = useState<ComponentProps[]>([]);
+  const canvasRef = React.useRef<HTMLDivElement>(null); // Reference to the canvas element
+  const [components, setComponents] = useState<ComponentProps[]>([]); // State to store the components on the canvas
 
+  // Function to move a component to a new position
   const moveBox = useCallback(
     (id: string, left: number, top: number) => {
-      const canvas = canvasRef.current?.getBoundingClientRect();
+      const canvas = canvasRef.current?.getBoundingClientRect(); // Get the canvas boundaries
       if (canvas) {
-        const component = components.find((comp) => comp.id === id);
+        const component = components.find((comp) => comp.id === id); // Find the component by id
         const elementWidth = component?.width || 0;
         const elementHeight = component?.height || 0;
 
+        // Ensure the component stays within the canvas boundaries
         left = Math.max(0, Math.min(left, canvas.width - elementWidth));
         top = Math.max(0, Math.min(top, canvas.height - elementHeight));
       }
 
+      // Update the component's position in the state
       setComponents((prevComponents) =>
         prevComponents.map((component) =>
           component.id === id ? { ...component, left, top } : component
@@ -43,22 +46,26 @@ const Canvas: React.FC<CanvasProps> = ({ isPreview }) => {
     [components, setComponents]
   );
 
+  // Function to add a new component to the canvas
   const addComponent = useCallback(
     (type: string, left: number, top: number) => {
-      const canvas = canvasRef.current?.getBoundingClientRect();
+      const canvas = canvasRef.current?.getBoundingClientRect(); // Get the canvas boundaries
       if (canvas) {
-        const elementWidth = 100; // Default width, can be adjusted as needed
-        const elementHeight = 50; // Default height, can be adjusted as needed
+        const elementWidth = 100; // Default width
+        const elementHeight = 50; // Default height
 
+        // Ensure the component stays within the canvas boundaries
         left = Math.max(0, Math.min(left, canvas.width - elementWidth));
         top = Math.max(0, Math.min(top, canvas.height - elementHeight));
       }
 
-      const id = `${type}-${components.length}`;
+      const id = `${type}-${components.length}`; // Generate a unique id for the component
       let width = 0;
       if (type === ItemTypes.TEXT || type === ItemTypes.IMAGE) {
-        width = 340;
+        width = 340; // Default width for text and image components
       }
+
+      // Add the new component to the state
       setComponents((prevComponents) => [
         ...prevComponents,
         { type, left, top, id, width: width, height: 50 }, // Default width and height
@@ -67,23 +74,26 @@ const Canvas: React.FC<CanvasProps> = ({ isPreview }) => {
     [components, setComponents]
   );
 
+  // Set up drop functionality using react-dnd
   const [, drop] = useDrop(
     () => ({
-      accept: [ItemTypes.BUTTON, ItemTypes.TEXT, ItemTypes.IMAGE],
+      accept: [ItemTypes.BUTTON, ItemTypes.TEXT, ItemTypes.IMAGE], // Accept these item types
       drop: (item: ComponentProps, monitor) => {
-        const currentClientOffset = monitor.getClientOffset();
-        const canvas = canvasRef.current?.getBoundingClientRect();
+        const currentClientOffset = monitor.getClientOffset(); // Get the current mouse position
+        const canvas = canvasRef.current?.getBoundingClientRect(); // Get the canvas boundaries
 
         if (currentClientOffset && canvas) {
-          let left = currentClientOffset.x - canvas.left;
+          let left = currentClientOffset.x - canvas.left; // Calculate the drop position within the canvas
           let top = currentClientOffset.y - canvas.top;
 
           const elementWidth = item.width || 0;
           const elementHeight = item.height || 0;
 
+          // Ensure the component stays within the canvas boundaries
           left = Math.max(0, Math.min(left, canvas.width - elementWidth));
           top = Math.max(0, Math.min(top, canvas.height - elementHeight));
 
+          // If the item does not have an id, add it as a new component; otherwise, move the existing component
           if (!item?.id) {
             addComponent(item.type, left, top);
           } else {
@@ -100,7 +110,7 @@ const Canvas: React.FC<CanvasProps> = ({ isPreview }) => {
       ref={
         !isPreview
           ? (node) => {
-              drop(node);
+              drop(node); // Attach drop ref if not in preview mode
               canvasRef.current = node;
             }
           : null
@@ -108,8 +118,8 @@ const Canvas: React.FC<CanvasProps> = ({ isPreview }) => {
       className="relative w-full h-[700px] border border-gray-100"
       style={
         isPreview
-          ? { border: "1px solid gray", backgroundColor: "white" }
-          : { border: "1px solid gray" }
+          ? { border: "1px solid gray", backgroundColor: "white" } // Style for preview mode
+          : { border: "1px solid gray" } // Style for edit mode
       }
     >
       <div
