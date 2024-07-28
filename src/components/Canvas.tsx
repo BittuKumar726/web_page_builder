@@ -116,8 +116,7 @@ const Canvas: React.FC<CanvasProps> = ({ isPreview }) => {
         style={{
           float: "right",
           padding: "10px",
-          border: "1px solid",
-          borderRadius: "10px",
+          border: "2px solid",
           textAlign: "center",
           wordBreak: "break-word",
           color: isPreview ? "white" : "black",

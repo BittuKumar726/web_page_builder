@@ -1,6 +1,5 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { DragSourceMonitor, useDrag } from "react-dnd";
-import { getEmptyImage } from "react-dnd-html5-backend";
 import { getDraggingStyles } from "../utils";
 
 interface TextBoxProps {
@@ -20,11 +19,7 @@ const TextBox: React.FC<TextBoxProps> = ({
   isPreview,
 }) => {
   const [text, setText] = useState("Enter the content input");
-  const [editing, setEditing] = useState(false);
 
-  const handleDoubleClick = () => setEditing(true);
-
-  const handleBlur = () => setEditing(false);
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: type,
@@ -38,7 +33,6 @@ const TextBox: React.FC<TextBoxProps> = ({
 
   return (
     <div
-      onDoubleClick={handleDoubleClick}
       className="w-[20%]"
       style={getDraggingStyles(left, top, isDragging, true, isPreview)}
     >
@@ -46,7 +40,6 @@ const TextBox: React.FC<TextBoxProps> = ({
         placeholder="placeholder"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        onBlur={handleBlur}
         autoFocus
         className="w-full p-1 border-2 border-gray-500"
         style={{ cursor: !isPreview ? "move" : "" }}
