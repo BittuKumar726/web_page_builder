@@ -18,7 +18,6 @@
 
 ### Documentation
 
-```markdown
 # WYSIWYG Web Page Builder
 
 ## Installation
@@ -44,4 +43,4 @@
 - Drag and drop components from the toolbar onto the canvas.
 - Edit text directly on the canvas.
 - Use the toggle button to switch between design mode and preview mode.
-```
+
