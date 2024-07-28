@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, useEffect } from "react";
+import React, { useCallback, useState, useRef } from "react";
 import { useDrop } from "react-dnd";
 import TextBox from "./TextBox";
 import ImageBox from "./ImageBox";
