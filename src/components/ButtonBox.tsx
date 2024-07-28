@@ -1,15 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDrag } from "react-dnd";
 import { ItemTypes, getDraggingStyles } from "../utils";
+import { FaTimes } from "react-icons/fa"; // FontAwesome icon for close button
 
 interface ButtonBoxProps {
   id: string;
   left: number;
   top: number;
-  isPreview: boolean;
+  isPreview: boolean; // Preview mode flag
+  onRemove: (id: string) => void; // Function to handle remove action
 }
 
-const ButtonBox: React.FC<ButtonBoxProps> = ({ id, left, top, isPreview }) => {
+const ButtonBox: React.FC<ButtonBoxProps> = ({
+  id,
+  left,
+  top,
+  isPreview,
+  onRemove,
+}) => {
   const [text, setText] = useState("Click me"); // State to store button text
   const [editing, setEditing] = useState(false); // State to manage editing mode
   const inputRef = useRef<HTMLInputElement>(null); // Reference to the input element
@@ -61,27 +69,38 @@ const ButtonBox: React.FC<ButtonBoxProps> = ({ id, left, top, isPreview }) => {
 
   return (
     <div
-      onDoubleClick={!isPreview ? handleDoubleClick : () => {}} // Enable editing on double-click if not in preview mode
-      style={getDraggingStyles(left, top, isDragging, false, isPreview)} // Apply styles based on drag state and preview mode
+      onDoubleClick={!isPreview ? handleDoubleClick : () => {}}
+      style={getDraggingStyles(left, top, isDragging, false, isPreview)}
+      className="relative"
+      ref={!isPreview ? drag : null}
     >
       {editing ? (
         <>
           <input
             ref={inputRef}
-            value={text} // Bind input value to text state
+            value={text}
             onChange={(e) => setText(e.target.value)} // Update text state on input change
             className="p-2 bg-white border border-gray-500 w-[150px]"
           />
         </>
       ) : (
-        <button
-          ref={!isPreview ? drag : null} // Attach drag ref if not in preview mode
-          className="bg-blue-500 text-white rounded max-w-[200px] whitespace-normal break-words"
-          style={{ cursor: !isPreview ? "move" : "", outline: "none" }} // Change cursor based on preview mode
-          onClick={isPreview ? () => alert("Clicked on Button") : () => {}}
-        >
-          {text}
-        </button>
+        <>
+          {!isPreview && (
+            <div
+              onClick={() => onRemove(id)}
+              className="absolute top-[-8px] right-[-8px] p-1 bg-red-500 text-white rounded-full cursor-pointer"
+            >
+              <FaTimes size={10} />
+            </div>
+          )}
+          <button
+            className="bg-blue-500 text-white rounded max-w-[200px] whitespace-normal break-words"
+            style={{ cursor: !isPreview ? "move" : "", outline: "none" }}
+            onClick={isPreview ? () => alert("Clicked on Button") : () => {}}
+          >
+            {text}
+          </button>
+        </>
       )}
     </div>
   );

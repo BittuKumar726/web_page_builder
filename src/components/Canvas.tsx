@@ -105,6 +105,17 @@ const Canvas: React.FC<CanvasProps> = ({ isPreview }) => {
     [moveBox, addComponent]
   );
 
+  const onRemoveComponent = (id: string) => {
+    const confirmRemoval = window.confirm(
+      "Are you sure you want to remove this component?"
+    );
+    if (confirmRemoval) {
+      setComponents((prevComponents) =>
+        prevComponents.filter((comp) => comp.id !== id)
+      );
+    }
+  };
+
   return (
     <div
       ref={
@@ -143,6 +154,7 @@ const Canvas: React.FC<CanvasProps> = ({ isPreview }) => {
                 key={component.id}
                 {...component}
                 isPreview={isPreview}
+                onRemove={onRemoveComponent}
               />
             );
           case ItemTypes.IMAGE:
@@ -151,6 +163,7 @@ const Canvas: React.FC<CanvasProps> = ({ isPreview }) => {
                 key={component.id}
                 {...component}
                 isPreview={isPreview}
+                onRemove={onRemoveComponent}
               />
             );
           case ItemTypes.BUTTON:
@@ -159,6 +172,7 @@ const Canvas: React.FC<CanvasProps> = ({ isPreview }) => {
                 key={component.id}
                 {...component}
                 isPreview={isPreview}
+                onRemove={onRemoveComponent}
               />
             );
           default:
