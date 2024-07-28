@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useRef, useEffect } from "react";
 import { useDrop } from "react-dnd";
 import TextBox from "./TextBox";
 import ImageBox from "./ImageBox";
@@ -19,7 +19,7 @@ interface CanvasProps {
 }
 
 const Canvas: React.FC<CanvasProps> = ({ isPreview }) => {
-  const canvasRef = React.useRef<HTMLDivElement>(null); // Reference to the canvas element
+  const canvasRef = useRef<HTMLDivElement>(null); // Reference to the canvas element
   const [components, setComponents] = useState<ComponentProps[]>([]); // State to store the components on the canvas
 
   // Function to move a component to a new position
@@ -116,16 +116,20 @@ const Canvas: React.FC<CanvasProps> = ({ isPreview }) => {
     }
   };
 
+  // Callback ref for handling the canvas reference assignment
+  const canvasRefCallback = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (node) {
+        drop(node); // Attach drop ref if not in preview mode
+        (canvasRef as React.MutableRefObject<HTMLDivElement>).current = node;
+      }
+    },
+    [drop]
+  );
+
   return (
     <div
-      ref={
-        !isPreview
-          ? (node) => {
-              drop(node); // Attach drop ref if not in preview mode
-              canvasRef.current = node;
-            }
-          : null
-      }
+      ref={!isPreview ? canvasRefCallback : null}
       className="relative w-full h-[700px] border border-gray-100"
       style={
         isPreview
