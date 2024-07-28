@@ -3,6 +3,7 @@ import { useDrop } from "react-dnd";
 import TextBox from "./TextBox";
 import ImageBox from "./ImageBox";
 import ButtonBox from "./ButtonBox";
+import { ItemTypes } from "../utils";
 
 interface ComponentProps {
   type: string;
@@ -45,45 +46,18 @@ const Canvas: React.FC<CanvasProps> = ({ components, setComponents }) => {
 
   const [, drop] = useDrop(
     () => ({
-      accept: ["text", "image", "button"],
+      accept: [ItemTypes.BUTTON, ItemTypes.TEXT, ItemTypes.IMAGE],
       drop: (item: ComponentProps, monitor) => {
-        const delta = monitor.getDifferenceFromInitialOffset();
-        const initialClientOffset = monitor.getInitialClientOffset();
-        const currentClientOffset = monitor.getSourceClientOffset();
+        const currentClientOffset = monitor.getClientOffset();
         const canvas = canvasRef.current?.getBoundingClientRect();
-        const wh = window.innerHeight;
-        const ww = window.innerWidth;
-        console.log({
-          delta,
-          initialClientOffset,
-          currentClientOffset,
-          canvas,
-          wh,
-          ww,
-        });
 
-        if (delta && initialClientOffset && canvas) {
+        if (currentClientOffset && canvas) {
+          const left = currentClientOffset.x - canvas.left;
+          const top = currentClientOffset.y - canvas.top;
+
           if (!item?.id) {
-            let x =
-              390 - Math.abs(delta.x) > 0
-                ? (392 - Math.abs(delta.x)) / 10
-                : 392 - Math.abs(delta.x);
-            let y =
-              Math.abs(delta.y) - 119 > 0
-                ? (Math.abs(delta.y) - 119) / 10
-                : Math.abs(delta.y) - 119;
-            console.log({ x, y });
-
-            const left = Math.floor(x);
-            const top = Math.floor(y);
             addComponent(item.type, left, top);
           } else {
-            let x = Math.abs(currentClientOffset.x) / 2;
-            let y = Math.abs(173 - Math.abs(currentClientOffset.y));
-            console.log({ x, y });
-
-            const left = Math.round(x / 32) * 32;
-            const top = Math.round(y / 32) * 32;
             moveBox(item.id, left, top);
           }
         }
@@ -98,15 +72,15 @@ const Canvas: React.FC<CanvasProps> = ({ components, setComponents }) => {
         drop(node);
         canvasRef.current = node;
       }}
-      className="relative w-[80%] h-[80%] border border-gray-100"
+      className="relative w-full h-screen border border-gray-100"
     >
       {components.map((component) => {
         switch (component.type) {
-          case "text":
+          case ItemTypes.TEXT:
             return <TextBox key={component.id} {...component} />;
-          case "image":
+          case ItemTypes.IMAGE:
             return <ImageBox key={component.id} {...component} />;
-          case "button":
+          case ItemTypes.BUTTON:
             return <ButtonBox key={component.id} {...component} />;
           default:
             return null;
