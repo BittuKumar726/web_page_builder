@@ -1,7 +1,4 @@
 # web_page_builder
-
-To build the assignment based on the provided requirements, here’s a step-by-step guide to creating a simple web-based WYSIWYG web page builder using React:
-
 ### Project Setup
 
 1. **Set Up of Project Structure**
