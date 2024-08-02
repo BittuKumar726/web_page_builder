@@ -8,7 +8,7 @@ const App: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col">
-      <Toolbar />
+      <Toolbar isPreview={isPreview} />
       {/* Button to toggle preview/edit mode */}
       <button
         onClick={() => setIsPreview(!isPreview)}

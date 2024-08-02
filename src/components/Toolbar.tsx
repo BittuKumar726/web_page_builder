@@ -5,12 +5,14 @@ interface DraggableItemProps {
   type: string;
   bgColor: string;
   children: React.ReactNode;
+  isPreview: boolean;
 }
 
 const DraggableItem: React.FC<DraggableItemProps> = ({
   type,
   bgColor,
   children,
+  isPreview,
 }) => {
   // Set up drag functionality using react-dnd
   const [{ isDragging }, drag] = useDrag(() => ({
@@ -23,7 +25,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
 
   return (
     <div
-      ref={drag} // Attach drag ref to the div
+      ref={!isPreview ? drag : null} // Attach drag ref to the div
       className={`p-2 m-2 border rounded border-gray-400 cursor-pointer ${
         isDragging ? "opacity-50" : "opacity-100" // Adjust opacity based on dragging state
       }`}
@@ -34,20 +36,24 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
   );
 };
 
-const Toolbar: React.FC = () => {
+interface ToolbarProps {
+  isPreview: boolean;
+}
+
+const Toolbar: React.FC<ToolbarProps> = ({ isPreview }) => {
   return (
     <div className="flex justify-between p-2 bg-gray-100 border-b border-gray-300 items-center">
       <div className="w-[35%] p-2">
         <span className="font-bold">Web page builder</span>
       </div>
       <div className="flex w-[50%]">
-        <DraggableItem type="text" bgColor="white">
+        <DraggableItem type="text" bgColor="white" isPreview={isPreview}>
           Text
         </DraggableItem>
-        <DraggableItem type="image" bgColor="#c6de75">
+        <DraggableItem type="image" bgColor="#c6de75" isPreview={isPreview}>
           Image
         </DraggableItem>
-        <DraggableItem type="button" bgColor="#3b82f6">
+        <DraggableItem type="button" bgColor="#3b82f6" isPreview={isPreview}>
           Button
         </DraggableItem>
       </div>
